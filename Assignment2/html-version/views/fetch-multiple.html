@@ -1,0 +1,15 @@
+<h1>{{ title }}</h1>
+
+<button id="fetch-images">Fetch Images</button>
+<div id="images-container">
+  {{#each files}}
+    <img src="{{ this }}" width="400" style="margin: 10px;" />
+  {{/each}}
+</div>
+
+<script>
+  document.getElementById("fetch-images").addEventListener("click", () => {
+    // Optionally handle any additional client-side logic here
+    console.log("Fetch Images button clicked!");
+  });
+</script>

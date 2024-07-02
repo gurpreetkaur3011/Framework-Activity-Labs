@@ -1,0 +1,42 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Fetch Multiple Random Images</title>
+</head>
+<body>
+    <h1>Fetch Multiple Random Images</h1>
+    <form id="fetch-form">
+        <label for="num-images">Number of images:</label>
+        <input type="number" id="num-images" name="numImages" min="1" required>
+        <button type="submit">Fetch Images</button>
+    </form>
+    <div id="image-container"></div>
+
+    <script>
+        document.getElementById("fetch-form").addEventListener("submit", (e) => {
+            e.preventDefault();
+            const numImages = document.getElementById("num-images").value;
+
+            fetch("/fetch-multiple", {
+                method: "POST",
+                headers: {
+                    "Content-Type": "application/json"
+                },
+                body: JSON.stringify({ numImages: parseInt(numImages) })
+            })
+            .then(response => response.json())
+            .then(data => {
+                const imageContainer = document.getElementById("image-container");
+                imageContainer.innerHTML = ""; // Clear previous images
+                data.forEach(image => {
+                    const img = document.createElement("img");
+                    img.src = `data:image/jpeg;base64,${image}`;
+                    img.width = 400;
+                    imageContainer.appendChild(img);
+                });
+            })
+            .catch(error => console.error("Error fetching images:", error));
+        });
+    </script>
+</body>
+</html>

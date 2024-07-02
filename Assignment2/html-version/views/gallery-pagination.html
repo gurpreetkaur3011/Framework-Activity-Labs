@@ -1,0 +1,61 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Image Gallery with Pagination</title>
+</head>
+<body>
+    <h1>Image Gallery with Pagination</h1>
+    <label for="items-per-page">Items per Page:</label>
+    <select id="items-per-page">
+        <option value="5">5</option>
+        <option value="10" selected>10</option>
+        <option value="15">15</option>
+        <option value="20">20</option>
+    </select>
+    <div id="gallery"></div>
+    <button id="prev-page">Previous</button>
+    <button id="next-page">Next</button>
+
+    <script>
+        let currentPage = 1;
+        let itemsPerPage = 10; // Default items per page
+
+        // Event listener for items per page selection
+        document.getElementById("items-per-page").addEventListener("change", function() {
+            itemsPerPage = parseInt(this.value, 10);
+            fetchPage(currentPage);
+        });
+
+        function fetchPage(page) {
+            fetch(`/fetch-all/pages/${page}?items_per_page=${itemsPerPage}`)
+                .then(response => response.json())
+                .then(data => {
+                    const gallery = document.getElementById("gallery");
+                    gallery.innerHTML = '';
+
+                    Object.values(data.files).forEach(file => {
+                        const img = document.createElement("img");
+                        img.src = `data:image/jpeg;base64,${file}`;
+                        img.width = 100;
+                        gallery.appendChild(img);
+                    });
+
+                    currentPage = data.page;
+                })
+                .catch(error => console.error('Error fetching images:', error));
+        }
+
+        document.getElementById("prev-page").addEventListener("click", () => {
+            if (currentPage > 1) {
+                fetchPage(currentPage - 1);
+            }
+        });
+
+        document.getElementById("next-page").addEventListener("click", () => {
+            fetchPage(currentPage + 1);
+        });
+
+        fetchPage(currentPage);
+    </script>
+</body>
+</html>
